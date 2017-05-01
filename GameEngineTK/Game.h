@@ -5,14 +5,15 @@
 #pragma once
 
 #include "StepTimer.h"
+#include "DebugCamera.h"
 
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
 #include <Effects.h>
 #include <CommonStates.h>
 #include <SimpleMath.h>
+#include <Model.h>
 
-#include "DebugCamera.h"
 
 
 
@@ -84,4 +85,22 @@ private:
 	
 	//デバックカメラ
 	std::unique_ptr<DebugCamera> m_debugCamera;
+	//エフェクトファクトリ
+	std::unique_ptr<DirectX::EffectFactory> m_factory;
+	//地面モデル
+	std::unique_ptr<DirectX::Model> m_modelGround;
+	//天球モデル
+	std::unique_ptr<DirectX::Model> m_modelSkydome;
+	//球モデル
+	std::unique_ptr<DirectX::Model> m_modelSkyball;
+	//球ワールド行列
+	DirectX::SimpleMath::Matrix m_worldBall1[10];
+	DirectX::SimpleMath::Matrix m_worldBall2[10];
+	/*地面ワールド行列*/
+	DirectX::SimpleMath::Matrix m_worldGround[10000];
+
+	/*回転させる変数*/
+	float Rotation;
+	
+
 };

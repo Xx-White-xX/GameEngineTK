@@ -61,7 +61,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
 		Vector3::Zero, Vector3::UnitY);
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
-		float(m_outputWidth) / float(m_outputHeight), 0.1f, 10.f);
+		float(m_outputWidth) / float(m_outputHeight), 0.1f, 500.f);
 
 	m_effect->SetView(m_view);
 	m_effect->SetProjection(m_proj);
@@ -81,6 +81,21 @@ void Game::Initialize(HWND window, int width, int height)
 	/*デバックカメラ生成*/
 	m_debugCamera = std::make_unique<DebugCamera>(m_outputWidth,m_outputHeight);
 
+	/*エフェクトファクトリの作成*/
+	m_factory = std::make_unique<EffectFactory>(m_d3dDevice.Get());
+	/*テクスチャの読み込みパス指定*/
+	m_factory->SetDirectory(L"Resources");
+	/*地面モデルの読み込み*/
+	m_modelGround = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Ground1M.cmo",*m_factory);
+	/*天球モデルの読み込み*/
+	m_modelSkydome = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Skydome.cmo", *m_factory);
+	/*球モデルの読み込み*/
+	m_modelSkyball = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Skyball.cmo", *m_factory);
+
+	/*回転させる変数*/
+	Rotation = 0.5f;
+	
+
 }
 
 // Executes the basic game loop.
@@ -97,15 +112,80 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-    float elapsedTime = float(timer.GetElapsedSeconds());
+	float elapsedTime = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    elapsedTime;
+	// TODO: Add your game logic here.
+	elapsedTime;
 
 	/*毎フレーム更新処理*/
 	m_debugCamera->Update();
 	/*ビュー行列を取得*/
 	m_view = m_debugCamera->GetCameraMatrix();
+
+
+	///*ロール*/
+	//Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(15.0f));
+	///*ピッチ()*/
+	//Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(15.0f));
+	///*ヨー(方位角)*/
+	//Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(15.0f));
+	///*回転行列(合成)*/
+	//Matrix rotmat = rotmatz * rotmatx * rotmaty;
+
+	
+
+	/*球のワールド行列を計算*/
+	Matrix scalemat = Matrix::CreateScale(0.5f);
+	/*ロール*/
+	Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(15.0f));
+	/*ピッチ()*/
+	Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(15.0f));
+	///*ヨー(方位角)*/
+	//Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(15.0f));
+	///*回転行列(合成)*/
+	//Matrix rotmat = rotmatx * rotmaty;
+	/*平行移動*/
+	Matrix trancemat1 = Matrix::CreateTranslation(20.0f, 0,0);
+	/*平行移動*/
+	Matrix trancemat2 = Matrix::CreateTranslation(40.0f, 0, 0);
+	/*平行移動*/
+	Matrix trancemat3 = Matrix::CreateTranslation(5.0f, 0, 0);
+
+	
+
+	/*ワールド行列の合成*/
+	//m_worldBall = scalemat* rotmat * trancemat;
+
+	for (int i = 0; i < 10; i++)
+	{
+		Rotation += 0.3f;
+		/*ヨー(方位角)*/
+		Matrix rotmaty1 = Matrix::CreateRotationY(XMConvertToRadians((i*36.0f) + Rotation));
+
+	m_worldBall1[i] = /*scalemat**/trancemat1*rotmaty1;
+
+	}
+	for (int j = 0; j < 10; j++)
+	{
+		
+		/*ヨー(方位角)*/
+		Matrix rotmaty2 = Matrix::CreateRotationY(XMConvertToRadians(j*36.0f - Rotation));
+		m_worldBall2[j] = /*scalemat**/trancemat2*rotmaty2;
+
+	}
+
+	for (int i = 0; i < 100; i++)
+	{
+
+		for (int j = 0; j < 100; j++)
+		{
+			/*ピッチ()*/
+			Matrix rotmaty1 = Matrix::CreateRotationY(XMConvertToRadians(j*90.0f));
+			m_worldGround[j] = trancemat3*rotmaty1;
+		}
+	}
+
+	
 
 }
 
@@ -149,6 +229,29 @@ void Game::Render()
 	m_effect->SetWorld(m_world);
 	m_effect->Apply(m_d3dContext.Get());
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+
+	/*地面モデルの描画*/
+	m_modelGround->Draw(m_d3dContext.Get(), m_states, m_world, m_view,m_proj);
+
+	/*天球モデルの描画*/
+	m_modelSkydome->Draw(m_d3dContext.Get(), m_states, m_world, m_view, m_proj);
+	/*球モデルの描画*/
+	for (int i = 0; i < 10; i++)
+	{
+	m_modelSkyball->Draw(m_d3dContext.Get(), m_states, m_worldBall1[i], m_view, m_proj);
+	m_modelSkyball->Draw(m_d3dContext.Get(), m_states, m_worldBall2[i], m_view, m_proj);
+	}
+
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	for (int j = 0; j < 100; j++)
+	//	{
+	//		/*地面モデルの描画*/
+	//		m_modelGround->Draw(m_d3dContext.Get(), m_states, m_worldGround[j], m_view, m_proj);
+	//	}
+	//}
+
+
 
 	m_batch->Begin();
 	/*m_batch->DrawLine(
