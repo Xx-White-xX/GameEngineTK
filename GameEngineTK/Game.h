@@ -6,6 +6,8 @@
 
 #include "StepTimer.h"
 #include "DebugCamera.h"
+#include "time.h"
+#include <Keyboard.h>
 
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
@@ -89,18 +91,44 @@ private:
 	std::unique_ptr<DirectX::EffectFactory> m_factory;
 	//地面モデル
 	std::unique_ptr<DirectX::Model> m_modelGround;
+	//地面モデル
+	std::unique_ptr<DirectX::Model> m_modelGround200;
 	//天球モデル
 	std::unique_ptr<DirectX::Model> m_modelSkydome;
 	//球モデル
 	std::unique_ptr<DirectX::Model> m_modelSkyball;
+	//ティーポットモデル
+	std::unique_ptr<DirectX::Model> m_modeltepot;
+	//headモデル
+	std::unique_ptr<DirectX::Model> m_modelhead;
 	//球ワールド行列
 	DirectX::SimpleMath::Matrix m_worldBall1[10];
 	DirectX::SimpleMath::Matrix m_worldBall2[10];
 	/*地面ワールド行列*/
-	DirectX::SimpleMath::Matrix m_worldGround[10000];
+	DirectX::SimpleMath::Matrix m_worldGround;
+	/*ティーポットワールド行列*/
+	DirectX::SimpleMath::Matrix m_worldTepot[20];
 
+	/*headワールド行列*/
+	DirectX::SimpleMath::Matrix m_worldhead;
 	/*回転させる変数*/
 	float Rotation;
+
+	float Distance;
+
+	/*キーボード*/
+	std::unique_ptr<DirectX::Keyboard> keyboard;
+
+	/*自機の座標*/
+	DirectX::SimpleMath::Vector3 tank_pos;
+
+	/*自機の回転角*/
+	float tank_angle;
+
+	/*自機のワールド行列*/
+	DirectX::SimpleMath::Matrix tank_world;
+
 	
+
 
 };
