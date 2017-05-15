@@ -7,6 +7,7 @@
 #include "StepTimer.h"
 #include "DebugCamera.h"
 #include "time.h"
+#include "FollowCamera.h"
 #include <Keyboard.h>
 
 #include <PrimitiveBatch.h>
@@ -128,7 +129,8 @@ private:
 	/*自機のワールド行列*/
 	DirectX::SimpleMath::Matrix tank_world;
 
-	
+	/*カメラ*/
+	std::unique_ptr<FollowCamera> m_Camera;
 
 
 };
