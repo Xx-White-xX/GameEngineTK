@@ -132,8 +132,12 @@ void Game::Initialize(HWND window, int width, int height)
 	/*キーボートの初期化*/
 	keyboard = std::make_unique<Keyboard>();
 
-	/*カメラ*/
+	/*カメラの生成*/
 	m_Camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
+
+	/*カメラにキーボードをセット*/
+	m_Camera->SetKeybord(keyboard.get());
+
 	
 }
 
@@ -177,7 +181,7 @@ void Game::Update(DX::StepTimer const& timer)
 
 	
 	/*自機にカメラ視点が付いてくる*/
-	m_Camera->SetEyePos(tank_pos);
+	//m_Camera->SetEyePos(tank_pos);
 
 	///*どこから見るのか(視点)*/
 	//Vector3 eyepos(0, 0, 5.0f);

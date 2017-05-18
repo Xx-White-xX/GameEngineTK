@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 /// <summary>
 /// コンストラクタ
@@ -7,9 +9,10 @@
 Camera::Camera(int width, int height)
 {
 	/*メンバ変数の初期化*/
-	m_eyepos = DirectX::SimpleMath::Vector3(0, 0, 5.0f);
-	m_refpos = DirectX::SimpleMath::Vector3(10, 10, 10);
-	m_upvec = DirectX::SimpleMath::Vector3(0, 1, 0);
+	m_eyepos = Vector3(0, 0, 5.0f);
+	m_refpos = Vector3(0, 0, 0);
+	m_upvec = Vector3(0, 1, 0);
+
 	m_fovY =DirectX::XMConvertToRadians(60.0f);
 	m_aspect = (float)width / height;
 	m_nearclip = 0.1f;

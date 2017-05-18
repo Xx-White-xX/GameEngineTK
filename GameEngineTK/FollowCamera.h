@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Camera.h"
+#include <Keyboard.h>
 
 class FollowCamera : public Camera
 {
@@ -27,6 +28,10 @@ public:
 	/*追従対象の座標をセット*/
 	void SetTargetAngle(float targetangle);
 
+	/*キーボードをセット*/
+	void SetKeybord(DirectX::Keyboard* keybord);
+
+
 protected:
 
 	/*追従対象の座標*/
@@ -35,7 +40,13 @@ protected:
 	/*追従対象の回転角*/
 	float m_targetAngle;
 
+	/*キーボード*/
+	DirectX::Keyboard* m_keybord;
+	/*キーボードトラッカー*/
+	DirectX::Keyboard::KeyboardStateTracker m_keybordTracker;
 
+	/*FPSカメラフラグ*/
+	bool m_isFPS;
 
 };
 
